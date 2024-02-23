@@ -6,14 +6,18 @@
 //
 
 import UIKit
-
 class ShopViewController: UIViewController {
     private let tableView = UITableView()
     private let idCell = "cell"
     private var goods: [Good] = [
-        Good(title: "Furniture", price: "$230", image: UIImage(named: "furniture"), details: "First good"),
-    Good(title: "Kitchen Ware", price: "$300", image: UIImage(named: "KitchenWare" ), details: "Second good"),
-    Good(title: "Reading Table", price: "$500", image: UIImage(named:"readingTable"), details: "Third good")]
+        Good(title: "Furniture", price: "$230", image: UIImage(named: "furniture"),
+             details: GoodDetails(roomType: "Living Room", color: "Grey", weight: "20.3 pounds"), rating: 4),
+        Good(title: "Kitchen Ware", price: "$300", image: UIImage(named: "KitchenWare"),
+             details: GoodDetails(roomType: "Kitchen", color: "White", weight: "30 pounds"), rating: 5),
+        Good(title: "Reading Table", price: "$500", image: UIImage(named: "readingTable"),
+             details: GoodDetails(roomType: "Office", color: "Black", weight: "10 pounds"),
+             rating: 3),
+    ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,32 +32,30 @@ class ShopViewController: UIViewController {
         ])
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.register(CustomtTableViewCell.self, forCellReuseIdentifier: idCell)
+        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: idCell)
     }
 }
 
-
-extension ShopViewController: UITableViewDataSource{
+extension ShopViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         goods.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: idCell, for: indexPath)
-        as! CustomtTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: idCell, for: indexPath) as! CustomTableViewCell
         cell.setData(title: goods[indexPath.row].title, image: goods[indexPath.row].image)
-        
         return cell
-        
     }
 }
-    extension ShopViewController: UITableViewDelegate {  // для нажатия на ячейку
-        
-        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            
-            let vc = SecondViewController()
-            navigationController?.pushViewController(vc, animated: true)
-        }
+extension ShopViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = SecondViewController(image: goods[indexPath.row].image ?? UIImage(),
+                                      labelText: goods[indexPath.row].title,
+                                      rating: goods[indexPath.row].rating,
+                                      priceLabel: goods[indexPath.row].price,
+                                      details: goods[indexPath.row].details)
+        navigationController?.pushViewController(vc, animated: true)
     }
+}
     
 
